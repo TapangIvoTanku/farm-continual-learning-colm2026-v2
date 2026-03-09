@@ -209,7 +209,7 @@ CoDyRA \citep{zhang2024codyre}        & 0.358          & $-$0.045          & $+$
 
 Table~\ref{tab:main} and Figure~\ref{fig:main_results} present the main results. \textbf{O-LoRA achieves the best overall performance}, with the highest \ACC{} ($0.395$) and near-zero forgetting (\BWT{} $= -0.006$), tied with EWC. \textbf{MagMax collapses on diverse task sequences}: \ACC{} $= 0.217$ and \BWT{} $= -0.091$, with \FWT{} $= -0.049$ indicating that prior task training \emph{hurts} zero-shot performance on subsequent tasks. \textbf{\FARM{} achieves the second-strongest forward transfer} (\FWT{} $= +0.088$, behind O-LoRA at $+0.093$), demonstrating that the gradient-subspace router successfully allocates capacity for future task learning. \FARM{}'s \BWT{} $= -0.045$ is its primary limitation, analysed in \S\ref{sec:analysis}.
 
-\begin{figure}[!h]
+\begin{figure}[t]
 \centering
 \includegraphics[width=0.95\textwidth]{figures/fig1_main_results.pdf}
 \caption{Main results across all seven methods on three continual learning metrics. \FARM{} achieves the second-highest forward transfer (\FWT{} $= +0.088$, behind O-LoRA at $+0.093$) while remaining competitive on average accuracy (\ACC{}).}
@@ -218,7 +218,7 @@ Table~\ref{tab:main} and Figure~\ref{fig:main_results} present the main results.
 
 \textbf{Computational cost.} \FARM{} requires 16.4 hours of training on a single A100 80GB, compared to 4.5--5.6 hours for the other LoRA-based methods (LoRA+Replay, MagMax, CoDyRA). The overhead stems from SVD-based rank pruning after each task ($O(d_\text{in} \cdot r^2)$ per layer) and per-token subspace overlap computation in the router. Notably, O-LoRA requires $\sim$32 hours due to Gram-Schmidt orthogonalisation over all prior task subspaces, making \FARM{} approximately 2$\times$ faster than O-LoRA while achieving competitive accuracy. Reducing \FARM{}'s training cost through approximate SVD or cached subspace representations is an important direction for future work.
 
-\begin{figure}[!h]
+\begin{figure}[t]
 \centering
 \includegraphics[width=0.60\textwidth]{figures/fig2_pareto_scatter.pdf}
 \caption{ACC vs.\ BWT Pareto frontier across all methods. \FARM{} occupies a unique position: the second-strongest forward transfer of all evaluated methods (\FWT{} $= +0.088$, behind O-LoRA at $+0.093$), but not on the Pareto frontier for the ACC–BWT trade-off.}
@@ -227,10 +227,11 @@ Table~\ref{tab:main} and Figure~\ref{fig:main_results} present the main results.
 
 Figure~\ref{fig:pareto} visualises the ACC–BWT trade-off. O-LoRA and EWC dominate the Pareto frontier for stability, while \FARM{} and CoDyRA occupy a middle ground. MagMax is strictly dominated by all other methods.
 
-\vspace{-0.8em}
 \subsection{Per-Task Analysis}
 
-\begin{table}[h]
+Table~\ref{tab:pertask} and Figure~\ref{fig:perf_matrices} reveal that \FARM{} performs competitively on MedQA ($0.540$, second only to O-LoRA) and HumanEval ($0.486$). The weaker performance on XSum ($0.188$) and GSM8K ($0.400$) reflects the forgetting issue identified in the \BWT{} metric. The performance matrices in Figure~\ref{fig:perf_matrices} visually confirm that O-LoRA maintains the most stable diagonal (near-constant task scores as more tasks are added), while Full Fine-Tune shows the steepest off-diagonal decay.
+
+\begin{table}[t]
 \centering
 \caption{Per-task final scores after training all five tasks (T1$\to$T5). Values are $R_{5,j}$ from the performance matrix.}
 \label{tab:pertask}
@@ -250,14 +251,12 @@ CoDyRA          & 0.179 & \underline{0.211} & \underline{0.560} & \underline{0.4
 \end{tabular}
 \end{table}
 
-\begin{figure}[!h]
+\begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/fig3_perf_matrices.pdf}
 \caption{Performance matrices $R \in \mathbb{R}^{5 \times 5}$ for four representative methods. Each cell $R_{ij}$ shows the score on task $T_j$ after training on task $T_i$. Diagonal entries show within-task performance; off-diagonal entries reveal forgetting (below diagonal) and forward transfer (above diagonal).}
 \label{fig:perf_matrices}
 \end{figure}
-
-Table~\ref{tab:pertask} and Figure~\ref{fig:perf_matrices} reveal that \FARM{} performs competitively on MedQA ($0.540$, second only to O-LoRA) and HumanEval ($0.486$). The weaker performance on XSum ($0.188$) and GSM8K ($0.400$) reflects the forgetting issue identified in the \BWT{} metric. The performance matrices in Figure~\ref{fig:perf_matrices} visually confirm that O-LoRA maintains the most stable diagonal (near-constant task scores as more tasks are added), while Full Fine-Tune shows the steepest off-diagonal decay.
 
 % ─────────────────────────────────────────────────────────────────────────────
 \section{Analysis}
@@ -311,14 +310,12 @@ All experiments use a fixed task order (T1$\to$T5). Evaluating \FARM{} across mu
 We presented \FARM{}, a continual learning framework for LLMs that combines adaptive-rank LoRA experts with gradient-subspace routing to balance plasticity, stability, and forward transfer. Our experiments on a challenging five-task benchmark spanning four distinct domains reveal that \FARM{} achieves the second-strongest forward transfer of all evaluated methods (\FWT{} $= +0.088$, behind O-LoRA at $+0.093$), demonstrating that subspace-aware routing effectively allocates expert capacity across the task stream. However, the soft routing mechanism does not fully prevent forgetting, and our analysis identifies routing temperature and explicit forgetting regularisation as the primary levers for improvement. Code, data, and experimental results will be made publicly available upon acceptance to facilitate reproducibility and future research.
 
 % ─────────────────────────────────────────────────────────────────────────────
+\clearpage
 \section*{Reproducibility Statement}
-All experiments were conducted using publicly available datasets (XSum, CNN/DailyMail, MedQA, GSM8K, HumanEval) and a publicly available base model (Mistral-7B-Instruct-v0.3, available on HuggingFace). Complete implementation details, including all hyperparameters, are provided in \S\ref{sec:experiments}. Source code, trained adapter weights, and full results --- including per-task performance matrices for all seven methods --- are provided in the anonymous supplementary repository at \url{https://anonymous.4open.science/r/farm-continual-learning-colm2026/}. All experiments use a fixed random seed (seed=42) and are fully deterministic given the same hardware. A single NVIDIA A100 80GB GPU is sufficient to reproduce all results; estimated total compute is approximately 80 GPU-hours across all methods.
+All experiments use publicly available datasets (XSum, CNN/DailyMail, MedQA, GSM8K, HumanEval) and a publicly available base model (Mistral-7B-Instruct-v0.3 on HuggingFace). Complete implementation details and hyperparameters are in \S\ref{sec:experiments}. Source code, trained adapter weights, and full results---including per-task performance matrices for all seven methods---are in the anonymous supplementary repository: \url{https://anonymous.4open.science/r/farm-continual-learning-colm2026/}. All experiments use a fixed random seed (42) and are fully deterministic given the same hardware. A single NVIDIA A100 80\,GB GPU suffices to reproduce all results; estimated total compute is approximately 80 GPU-hours.
 
 % ─────────────────────────────────────────────────────────────────────────────
-\section*{LLM Usage Statement}
-AI-assisted writing tools were used during the preparation of this manuscript for grammar correction, sentence restructuring, and improving clarity of exposition. All scientific content, experimental design, results, and analysis are the work of the authors. No AI tool contributed to research ideation, experimental design, code implementation, or result interpretation.
 
-% ─────────────────────────────────────────────────────────────────────────────
 \bibliography{farm_references}
 \bibliographystyle{colm2026_conference}
 
