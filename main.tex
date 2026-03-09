@@ -210,23 +210,23 @@ CoDyRA \citep{zhang2024codyre}        & 0.358          & $-$0.045          & $+$
 
 Table~\ref{tab:main} and Figure~\ref{fig:main_results} present the main results. \textbf{O-LoRA achieves the best overall performance}, with the highest \ACC{} ($0.395$) and near-zero forgetting (\BWT{} $= -0.006$), tied with EWC. \textbf{MagMax collapses on diverse task sequences}: \ACC{} $= 0.217$ and \BWT{} $= -0.091$, with \FWT{} $= -0.049$ indicating that prior task training \emph{hurts} zero-shot performance on subsequent tasks. \textbf{\FARM{} achieves the second-strongest forward transfer} (\FWT{} $= +0.088$, behind O-LoRA at $+0.093$), demonstrating that the gradient-subspace router successfully allocates capacity for future task learning. \FARM{}'s \BWT{} $= -0.045$ is its primary limitation, analysed in \S\ref{sec:analysis}.
 
-\begin{figure}[t]
+\textbf{Computational cost.} \FARM{} requires 16.4 hours of training on a single A100 80GB, compared to 4.5--5.6 hours for the other LoRA-based methods (LoRA+Replay, MagMax, CoDyRA). The overhead stems from SVD-based rank pruning after each task ($O(d_\text{in} \cdot r^2)$ per layer) and per-token subspace overlap computation in the router. Notably, O-LoRA requires $\sim$32 hours due to Gram-Schmidt orthogonalisation over all prior task subspaces, making \FARM{} approximately 2$\times$ faster than O-LoRA while achieving competitive accuracy. Reducing \FARM{}'s training cost through approximate SVD or cached subspace representations is an important direction for future work.
+
+Figure~\ref{fig:pareto} visualises the ACC–BWT trade-off. O-LoRA and EWC dominate the Pareto frontier for stability, while \FARM{} and CoDyRA occupy a middle ground. MagMax is strictly dominated by all other methods.
+
+\begin{figure}[h!]
 \centering
 \includegraphics[width=0.95\textwidth]{figures/fig1_main_results.pdf}
 \caption{Main results across all seven methods on three continual learning metrics. \FARM{} achieves the second-highest forward transfer (\FWT{} $= +0.088$, behind O-LoRA at $+0.093$) while remaining competitive on average accuracy (\ACC{}).}
 \label{fig:main_results}
 \end{figure}
 
-\textbf{Computational cost.} \FARM{} requires 16.4 hours of training on a single A100 80GB, compared to 4.5--5.6 hours for the other LoRA-based methods (LoRA+Replay, MagMax, CoDyRA). The overhead stems from SVD-based rank pruning after each task ($O(d_\text{in} \cdot r^2)$ per layer) and per-token subspace overlap computation in the router. Notably, O-LoRA requires $\sim$32 hours due to Gram-Schmidt orthogonalisation over all prior task subspaces, making \FARM{} approximately 2$\times$ faster than O-LoRA while achieving competitive accuracy. Reducing \FARM{}'s training cost through approximate SVD or cached subspace representations is an important direction for future work.
-
-\begin{figure}[t]
+\begin{figure}[h!]
 \centering
 \includegraphics[width=0.60\textwidth]{figures/fig2_pareto_scatter.pdf}
 \caption{ACC vs.\ BWT Pareto frontier across all methods. \FARM{} occupies a unique position: the second-strongest forward transfer of all evaluated methods (\FWT{} $= +0.088$, behind O-LoRA at $+0.093$), but not on the Pareto frontier for the ACC–BWT trade-off.}
 \label{fig:pareto}
 \end{figure}
-
-Figure~\ref{fig:pareto} visualises the ACC–BWT trade-off. O-LoRA and EWC dominate the Pareto frontier for stability, while \FARM{} and CoDyRA occupy a middle ground. MagMax is strictly dominated by all other methods.
 
 \begin{table}[t]
 \centering
