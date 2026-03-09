@@ -1,0 +1,48 @@
+# requirements.txt
+# -----------------
+# FARM: Forgetting-Aware Rank-Modulated Experts
+# Tested on Python 3.10 / 3.11, CUDA 12.1, 2x NVIDIA A100 80GB
+#
+# Install:
+#   pip install -r requirements.txt
+
+# Core deep learning
+torch>=2.1.0
+torchvision>=0.16.0
+
+# Transformers & PEFT
+transformers>=4.38.0
+peft>=0.9.0
+accelerate>=0.27.0
+bitsandbytes>=0.42.0
+
+# Datasets & tokenisation
+datasets>=2.17.0
+tokenizers>=0.15.0
+sentencepiece>=0.1.99
+
+# Evaluation
+rouge-score>=0.1.2
+evaluate>=0.4.1
+nltk>=3.8.1
+
+# Training utilities
+tqdm>=4.66.0
+pyyaml>=6.0.1
+numpy>=1.24.0
+scipy>=1.11.0
+
+# Logging (optional — set use_wandb: true in config to enable)
+wandb>=0.16.0
+
+# Figure generation (for generate_figures.py)
+matplotlib>=3.8.0
+seaborn>=0.13.0
+pandas>=2.1.0
+
+# Development & testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+black>=23.0.0
+isort>=5.12.0
+flake8>=6.1.0

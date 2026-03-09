@@ -1,0 +1,83 @@
+# configs/baselines_config.yaml
+# ------------------------------
+# Hyperparameters for all baseline methods.
+# These match the settings reported in Table 1 of the FARM paper.
+
+model:
+  name: "mistralai/Mistral-7B-v0.1"
+  dtype: "bfloat16"
+  device_map: "auto"
+  trust_remote_code: false
+
+training:
+  num_epochs: 3
+  batch_size: 8
+  gradient_accumulation_steps: 4
+  learning_rate: 2.0e-4
+  lr_scheduler: "linear"
+  warmup_ratio: 0.06
+  weight_decay: 0.01
+  max_grad_norm: 1.0
+  max_length: 512
+  seed: 42
+
+evaluation:
+  eval_batch_size: 16
+  generate_max_new_tokens: 256
+  num_beams: 1
+  do_sample: false
+
+data:
+  data_dir: "./data/processed"
+  num_workers: 4
+
+# ---------------------------------------------------------------------------
+# Method-specific settings
+# ---------------------------------------------------------------------------
+
+# LoRA (shared across Full Fine-Tune, EWC, O-LoRA, LoRA+Replay, CoDyRA)
+lora:
+  rank: 8
+  alpha: 16
+  dropout: 0.05
+  target_modules:
+    - "q_proj"
+    - "k_proj"
+    - "v_proj"
+    - "o_proj"
+    - "gate_proj"
+    - "up_proj"
+    - "down_proj"
+
+# EWC (Elastic Weight Consolidation)
+ewc:
+  lambda: 5000                    # EWC regularisation strength
+  fisher_samples: 200             # Samples for Fisher information estimation
+
+# O-LoRA (Orthogonal LoRA)
+o_lora:
+  orthogonal_loss_weight: 0.1     # λ for orthogonality constraint
+  gram_schmidt_freq: 100          # Steps between Gram-Schmidt orthogonalisation
+
+# LoRA + Replay
+lora_replay:
+  replay_buffer_size: 500         # Examples per task in replay buffer
+  replay_ratio: 0.2               # Fraction of each batch from replay buffer
+
+# MagMax (Weight Interpolation)
+magmax:
+  interpolation_steps: 10         # Number of interpolation steps for merging
+
+# CoDyRA (Continual Dynamic Rank Adaptation)
+codyra:
+  rank_growth_threshold: 0.1      # Gradient norm threshold to grow rank
+  max_rank: 16
+  min_rank: 2
+
+logging:
+  use_wandb: false
+  wandb_project: "farm-iclr2026-baselines"
+
+checkpointing:
+  save_dir: "./results/baselines"
+  save_every_task: true

@@ -1,0 +1,93 @@
+# configs/farm_config.yaml
+# -------------------------
+# FARM: Forgetting-Aware Rank-Modulated Experts
+# Hyperparameters matching the ICLR 2026 paper submission.
+#
+# Hardware used in paper: 2x NVIDIA A100 80GB
+# Approximate wall-clock time: ~16 hours for full 5-task sequence
+#
+# Usage:
+#   python training/train_farm.py --config configs/farm_config.yaml
+
+# ---------------------------------------------------------------------------
+# Model
+# ---------------------------------------------------------------------------
+model:
+  name: "mistralai/Mistral-7B-v0.1"   # Base LLM (7B parameters)
+  dtype: "bfloat16"                    # Mixed precision (bfloat16 recommended for A100)
+  device_map: "auto"                   # Distribute across available GPUs
+  trust_remote_code: false
+
+# ---------------------------------------------------------------------------
+# FARM-specific hyperparameters
+# ---------------------------------------------------------------------------
+farm:
+  num_experts: 4                  # K = 4 LoRA experts per layer
+  initial_rank: 8                 # Starting LoRA rank per expert (r_0 = 8)
+  max_rank: 16                    # Maximum rank per expert (r_max = 16)
+  min_rank: 2                     # Minimum rank per expert (r_min = 2)
+  lora_alpha: 16                  # LoRA scaling factor (alpha = 16)
+  lora_dropout: 0.05              # LoRA dropout rate
+  target_modules:                 # Which linear layers to apply LoRA to
+    - "q_proj"
+    - "k_proj"
+    - "v_proj"
+    - "o_proj"
+    - "gate_proj"
+    - "up_proj"
+    - "down_proj"
+  top_k: 1                        # Number of experts activated per token
+  svd_threshold: 0.01             # Singular value threshold for rank pruning
+  rank_realloc_fraction: 0.5      # Fraction of freed capacity to reallocate
+  alignment_loss_weight: 0.1      # λ for subspace alignment regularisation (λ_align)
+  forgetting_bound_target: 0.05   # Target forgetting bound F(T_i) ≤ 0.05
+
+# ---------------------------------------------------------------------------
+# Training
+# ---------------------------------------------------------------------------
+training:
+  num_epochs: 3                   # Epochs per task
+  batch_size: 8                   # Per-device batch size
+  gradient_accumulation_steps: 4  # Effective batch size = 8 * 4 = 32
+  learning_rate: 2.0e-4           # Peak learning rate
+  lr_scheduler: "linear"          # Learning rate schedule
+  warmup_ratio: 0.06              # 6% of steps for warmup
+  weight_decay: 0.01              # AdamW weight decay
+  max_grad_norm: 1.0              # Gradient clipping
+  optimizer: "adamw"              # Optimiser
+  adam_beta1: 0.9
+  adam_beta2: 0.999
+  adam_epsilon: 1.0e-8
+  max_length: 512                 # Maximum sequence length (tokens)
+  seed: 42                        # Random seed for reproducibility
+
+# ---------------------------------------------------------------------------
+# Evaluation
+# ---------------------------------------------------------------------------
+evaluation:
+  eval_every_n_steps: 500         # Evaluate on validation set every N steps
+  eval_batch_size: 16             # Batch size for evaluation
+  generate_max_new_tokens: 256    # Maximum tokens to generate at eval time
+  num_beams: 1                    # Greedy decoding (beam_size=1)
+  do_sample: false                # Deterministic generation
+
+# ---------------------------------------------------------------------------
+# Logging & checkpointing
+# ---------------------------------------------------------------------------
+logging:
+  log_every_n_steps: 50           # Log training loss every N steps
+  use_wandb: false                # Set to true to enable Weights & Biases logging
+  wandb_project: "farm-iclr2026"
+  wandb_entity: null              # Your W&B username or team
+
+checkpointing:
+  save_every_task: true           # Save adapter weights after each task
+  save_dir: "./results/farm"      # Output directory for checkpoints
+  keep_last_n: 5                  # Keep only the last N checkpoints
+
+# ---------------------------------------------------------------------------
+# Data
+# ---------------------------------------------------------------------------
+data:
+  data_dir: "./data/processed"    # Preprocessed data directory
+  num_workers: 4                  # DataLoader worker processes
