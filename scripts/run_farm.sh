@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # scripts/run_farm.sh
 # --------------------
-# Reproduce FARM results from the ICLR 2026 paper.
+# Reproduce FARM results from the COLM 2026 paper.
 # Trains FARM on the 5-task continual learning benchmark and saves results.
 #
 # Expected hardware: 2x NVIDIA A100 80GB (~16 hours)

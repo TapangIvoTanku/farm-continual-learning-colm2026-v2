@@ -2,7 +2,7 @@
 # scripts/run_all.sh
 # -------------------
 # Full replication script: downloads data, trains FARM and all baselines,
-# and generates all figures from the ICLR 2026 paper.
+# and generates all figures from the COLM 2026 paper.
 #
 # Usage:
 #   bash scripts/run_all.sh
@@ -14,7 +14,7 @@ set -euo pipefail
 
 echo "============================================================"
 echo "  FARM Full Replication"
-echo "  ICLR 2026 Submission"
+echo "  COLM 2026 Submission"
 echo "============================================================"
 echo ""
 

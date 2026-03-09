@@ -56,3 +56,19 @@ runs/
 # Secrets
 .env.local
 secrets.yaml
+
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.pdf
+!figures/*.pdf
+
+# Audit/internal files
+page_images/
+audit_findings.md
+COLM_2026_Audit_Report.md
+FARM_Overleaf_Task_Page.md
+v1_full_diff.txt

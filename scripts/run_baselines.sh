@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # scripts/run_baselines.sh
 # -------------------------
-# Reproduce all baseline results from the ICLR 2026 paper.
+# Reproduce all baseline results from the COLM 2026 paper.
 # Trains: Full Fine-Tune, EWC, O-LoRA, LoRA+Replay, MagMax, CoDyRA
 #
 # Usage:

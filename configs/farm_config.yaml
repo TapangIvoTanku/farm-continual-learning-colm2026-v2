@@ -1,7 +1,7 @@
 # configs/farm_config.yaml
 # -------------------------
 # FARM: Forgetting-Aware Rank-Modulated Experts
-# Hyperparameters matching the ICLR 2026 paper submission.
+# Hyperparameters matching the COLM 2026 paper submission.
 #
 # Hardware used in paper: 2x NVIDIA A100 80GB
 # Approximate wall-clock time: ~16 hours for full 5-task sequence
@@ -13,7 +13,7 @@
 # Model
 # ---------------------------------------------------------------------------
 model:
-  name: "mistralai/Mistral-7B-v0.1"   # Base LLM (7B parameters)
+  name: "mistralai/Mistral-7B-Instruct-v0.3"   # Base LLM (7B parameters, instruction-tuned)
   dtype: "bfloat16"                    # Mixed precision (bfloat16 recommended for A100)
   device_map: "auto"                   # Distribute across available GPUs
   trust_remote_code: false
@@ -77,7 +77,7 @@ evaluation:
 logging:
   log_every_n_steps: 50           # Log training loss every N steps
   use_wandb: false                # Set to true to enable Weights & Biases logging
-  wandb_project: "farm-iclr2026"
+  wandb_project: "farm-colm2026"
   wandb_entity: null              # Your W&B username or team
 
 checkpointing:

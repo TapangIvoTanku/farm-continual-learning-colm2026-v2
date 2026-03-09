@@ -19,7 +19,7 @@ On a five-task continual instruction-tuning benchmark (XSum → CNN/DailyMail �
 ## Repository Structure
 
 ```
-farm-continual-learning-iclr2026/
+farm-continual-learning-colm2026/
 ├── configs/
 │   ├── farm_config.yaml          # FARM hyperparameters (matches paper Table 1)
 │   └── baselines_config.yaml     # Shared baseline hyperparameters
@@ -72,7 +72,7 @@ farm-continual-learning-iclr2026/
 | Minimum | 1× NVIDIA A100 40 GB | ~160 hours (reduce `batch_size` to 4) |
 | Development/debug | 1× NVIDIA RTX 3090 24 GB | Possible with `max_train_samples: 1000` |
 
-FARM was developed and evaluated on **2× NVIDIA A100 80 GB** GPUs with CUDA 12.1. The base model is `mistralai/Mistral-7B-v0.1` (7B parameters, ~14 GB in bfloat16).
+FARM was developed and evaluated on **2× NVIDIA A100 80 GB** GPUs with CUDA 12.1. The base model is `mistralai/Mistral-7B-Instruct-v0.3` (7B parameters, ~14 GB in bfloat16).
 
 ### Software
 
@@ -86,7 +86,7 @@ FARM was developed and evaluated on **2× NVIDIA A100 80 GB** GPUs with CUDA 12.
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/TapangIvoTanku/farm-continual-learning-colm2026.git
+git clone https://anonymous.4open.science/r/farm-continual-learning-colm2026/
 cd farm-continual-learning-colm2026
 
 # 2. Create and activate a virtual environment (recommended)
@@ -100,7 +100,7 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-> **Note on Hugging Face access:** The base model `mistralai/Mistral-7B-v0.1` requires accepting the Mistral AI license. Run `huggingface-cli login` and accept the terms at https://huggingface.co/mistralai/Mistral-7B-v0.1 before training.
+> **Note on Hugging Face access:** The base model `mistralai/Mistral-7B-Instruct-v0.3` requires accepting the Mistral AI license. Run `huggingface-cli login` and accept the terms at https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3 before training.
 
 ---
 
