@@ -25,6 +25,7 @@
 \usepackage{mathtools}
 \usepackage{bm}
 \usepackage{float}
+\raggedbottom
 
 % ── Convenience macros ────────────────────────────────────────────────────────
 \newcommand{\FARM}{\textsc{Farm}}
@@ -227,10 +228,6 @@ Table~\ref{tab:main} and Figure~\ref{fig:main_results} present the main results.
 
 Figure~\ref{fig:pareto} visualises the ACC–BWT trade-off. O-LoRA and EWC dominate the Pareto frontier for stability, while \FARM{} and CoDyRA occupy a middle ground. MagMax is strictly dominated by all other methods.
 
-\subsection{Per-Task Analysis}
-
-Table~\ref{tab:pertask} and Figure~\ref{fig:perf_matrices} reveal that \FARM{} performs competitively on MedQA ($0.540$, second only to O-LoRA) and HumanEval ($0.486$). The weaker performance on XSum ($0.188$) and GSM8K ($0.400$) reflects the forgetting issue identified in the \BWT{} metric. The performance matrices in Figure~\ref{fig:perf_matrices} visually confirm that O-LoRA maintains the most stable diagonal (near-constant task scores as more tasks are added), while Full Fine-Tune shows the steepest off-diagonal decay.
-
 \begin{table}[t]
 \centering
 \caption{Per-task final scores after training all five tasks (T1$\to$T5). Values are $R_{5,j}$ from the performance matrix.}
@@ -257,6 +254,10 @@ CoDyRA          & 0.179 & \underline{0.211} & \underline{0.560} & \underline{0.4
 \caption{Performance matrices $R \in \mathbb{R}^{5 \times 5}$ for four representative methods. Each cell $R_{ij}$ shows the score on task $T_j$ after training on task $T_i$. Diagonal entries show within-task performance; off-diagonal entries reveal forgetting (below diagonal) and forward transfer (above diagonal).}
 \label{fig:perf_matrices}
 \end{figure}
+
+\subsection{Per-Task Analysis}
+
+Table~\ref{tab:pertask} and Figure~\ref{fig:perf_matrices} reveal that \FARM{} performs competitively on MedQA ($0.540$, second only to O-LoRA) and HumanEval ($0.486$). The weaker performance on XSum ($0.188$) and GSM8K ($0.400$) reflects the forgetting issue identified in the \BWT{} metric. The performance matrices in Figure~\ref{fig:perf_matrices} visually confirm that O-LoRA maintains the most stable diagonal (near-constant task scores as more tasks are added), while Full Fine-Tune shows the steepest off-diagonal decay.
 
 % ─────────────────────────────────────────────────────────────────────────────
 \section{Analysis}
